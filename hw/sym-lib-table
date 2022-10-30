@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name wifi_clock)(type Legacy)(uri ${KIPRJMOD}/wifi_clock.lib)(options "")(descr ""))
+)

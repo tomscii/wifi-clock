@@ -1,0 +1,19 @@
+To build:
+
+mkdir build && cd build
+cmake -DPICO_BOARD=pico_w -DWIFI_SSID="Your Network" -DWIFI_PASSWORD="Your Password" ..
+make
+
+To upload to RPi Pico W board
+(connected via USB, powered up with BOOTSEL pressed):
+
+sudo mount /dev/sda1 /mnt/pico
+sudo cp wifi_clock.uf2 /mnt/pico/
+sync && sudo umount /mnt/pico
+
+To connect using hardware UART
+(PicoW pin 1 = UART0_TX, pin 2 = UART0_RX, pin 3 = GND):
+minicom -D /dev/ttyUSB0 -b 115200
+
+To connect using USB CDC:
+minicom -D /dev/ttyACM0 -b 115200

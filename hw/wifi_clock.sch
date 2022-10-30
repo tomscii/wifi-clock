@@ -1,0 +1,808 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L 74xx:74HC595 U1
+U 1 1 635D4966
+P 4425 2425
+F 0 "U1" H 4125 3175 50  0000 C CNN
+F 1 "74HC595" H 4125 3075 50  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 4425 2425 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74hc595.pdf" H 4425 2425 50  0001 C CNN
+	1    4425 2425
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74xx:74HC595 U2
+U 1 1 635D4CD5
+P 4425 4225
+F 0 "U2" H 4125 4975 50  0000 C CNN
+F 1 "74HC595" H 4125 4850 50  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 4425 4225 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74hc595.pdf" H 4425 4225 50  0001 C CNN
+	1    4425 4225
+	1    0    0    -1  
+$EndComp
+$Comp
+L Display_Character:KCSA02-107 U3
+U 1 1 635D96C9
+P 6975 2625
+F 0 "U3" H 6975 3292 50  0000 C CNN
+F 1 "JSD-5613BUA" H 6975 3201 50  0000 C CNN
+F 2 "Display_7Segment:7SegmentLED_LTS6760_LTS6780" H 6975 2025 50  0001 C CNN
+F 3 "http://www.kingbright.com/attachments/file/psearch/000/00/00/KCSA02-107(Ver.10A).pdf" H 6475 3100 50  0001 L CNN
+	1    6975 2625
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4825 2925 4950 2925
+Wire Wire Line
+	4950 2925 4950 3375
+Wire Wire Line
+	4950 3375 3875 3375
+Wire Wire Line
+	3875 3375 3875 3825
+Wire Wire Line
+	3875 3825 4025 3825
+Text Label 3800 2225 0    50   ~ 0
+SCK
+Text Label 3800 4025 0    50   ~ 0
+SCK
+Wire Wire Line
+	3800 4025 4025 4025
+Wire Wire Line
+	3800 2225 4025 2225
+Wire Wire Line
+	4025 2525 3800 2525
+Text Label 3800 2525 0    50   ~ 0
+CS-
+Wire Wire Line
+	4025 4325 3800 4325
+Text Label 3800 4325 0    50   ~ 0
+CS-
+Wire Wire Line
+	4025 2325 3800 2325
+Text Label 3800 2325 0    50   ~ 0
+VDD
+Wire Wire Line
+	4025 4125 3800 4125
+Text Label 3800 4125 0    50   ~ 0
+VDD
+$Comp
+L power:GND #PWR02
+U 1 1 635E183E
+P 4025 2625
+F 0 "#PWR02" H 4025 2375 50  0001 C CNN
+F 1 "GND" H 4030 2452 50  0000 C CNN
+F 2 "" H 4025 2625 50  0001 C CNN
+F 3 "" H 4025 2625 50  0001 C CNN
+	1    4025 2625
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR04
+U 1 1 635E3DBA
+P 4425 3125
+F 0 "#PWR04" H 4425 2875 50  0001 C CNN
+F 1 "GND" H 4430 2952 50  0000 C CNN
+F 2 "" H 4425 3125 50  0001 C CNN
+F 3 "" H 4425 3125 50  0001 C CNN
+	1    4425 3125
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR05
+U 1 1 635E4178
+P 4425 4925
+F 0 "#PWR05" H 4425 4675 50  0001 C CNN
+F 1 "GND" H 4430 4752 50  0000 C CNN
+F 2 "" H 4425 4925 50  0001 C CNN
+F 3 "" H 4425 4925 50  0001 C CNN
+	1    4425 4925
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR03
+U 1 1 635E458B
+P 4025 4425
+F 0 "#PWR03" H 4025 4175 50  0001 C CNN
+F 1 "GND" H 4030 4252 50  0000 C CNN
+F 2 "" H 4025 4425 50  0001 C CNN
+F 3 "" H 4025 4425 50  0001 C CNN
+	1    4025 4425
+	1    0    0    -1  
+$EndComp
+Text Label 4425 1775 0    50   ~ 0
+VDD
+Text Label 4425 3575 0    50   ~ 0
+VDD
+Wire Wire Line
+	4425 3625 4425 3575
+Wire Wire Line
+	4425 3575 4575 3575
+Wire Wire Line
+	4425 1825 4425 1775
+Wire Wire Line
+	4425 1775 4575 1775
+Wire Wire Line
+	4025 2025 3800 2025
+Text Label 3800 2025 0    50   ~ 0
+SDA
+Text Label 4925 2725 0    50   ~ 0
+D0_EN
+Text Label 4925 2625 0    50   ~ 0
+D1_EN
+Text Label 4925 2225 0    50   ~ 0
+D5_EN
+Text Label 4925 2325 0    50   ~ 0
+D4_EN
+Text Label 4925 2425 0    50   ~ 0
+D3_EN
+Text Label 4925 2525 0    50   ~ 0
+D2_EN
+Wire Wire Line
+	4825 2525 5175 2525
+Wire Wire Line
+	4825 2425 5175 2425
+Wire Wire Line
+	4825 2325 5175 2325
+Wire Wire Line
+	4825 2225 5175 2225
+NoConn ~ 4825 4725
+$Comp
+L Device:R R1
+U 1 1 635EE92A
+P 5150 3825
+F 0 "R1" V 5100 3625 50  0000 C CNN
+F 1 "100" V 5150 3825 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" V 5080 3825 50  0001 C CNN
+F 3 "~" H 5150 3825 50  0001 C CNN
+	1    5150 3825
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R R2
+U 1 1 635F0A56
+P 5150 3925
+F 0 "R2" V 5100 3725 50  0000 C CNN
+F 1 "100" V 5150 3925 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" V 5080 3925 50  0001 C CNN
+F 3 "~" H 5150 3925 50  0001 C CNN
+	1    5150 3925
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R R3
+U 1 1 635F0E40
+P 5150 4025
+F 0 "R3" V 5100 3825 50  0000 C CNN
+F 1 "100" V 5150 4025 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" V 5080 4025 50  0001 C CNN
+F 3 "~" H 5150 4025 50  0001 C CNN
+	1    5150 4025
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R R4
+U 1 1 635F1238
+P 5150 4125
+F 0 "R4" V 5100 3925 50  0000 C CNN
+F 1 "100" V 5150 4125 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" V 5080 4125 50  0001 C CNN
+F 3 "~" H 5150 4125 50  0001 C CNN
+	1    5150 4125
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R R5
+U 1 1 635F15A0
+P 5150 4225
+F 0 "R5" V 5100 4025 50  0000 C CNN
+F 1 "100" V 5150 4225 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" V 5080 4225 50  0001 C CNN
+F 3 "~" H 5150 4225 50  0001 C CNN
+	1    5150 4225
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R R6
+U 1 1 635F1930
+P 5150 4325
+F 0 "R6" V 5100 4125 50  0000 C CNN
+F 1 "100" V 5150 4325 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" V 5080 4325 50  0001 C CNN
+F 3 "~" H 5150 4325 50  0001 C CNN
+	1    5150 4325
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R R7
+U 1 1 635F1E09
+P 5150 4425
+F 0 "R7" V 5100 4225 50  0000 C CNN
+F 1 "100" V 5150 4425 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" V 5080 4425 50  0001 C CNN
+F 3 "~" H 5150 4425 50  0001 C CNN
+	1    5150 4425
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R R8
+U 1 1 635F2247
+P 5150 4525
+F 0 "R8" V 5100 4325 50  0000 C CNN
+F 1 "100" V 5150 4525 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P7.62mm_Horizontal" V 5080 4525 50  0001 C CNN
+F 3 "~" H 5150 4525 50  0001 C CNN
+	1    5150 4525
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	5000 3825 4825 3825
+Wire Wire Line
+	4825 3925 5000 3925
+Wire Wire Line
+	5000 4025 4825 4025
+Wire Wire Line
+	4825 4125 5000 4125
+Wire Wire Line
+	5000 4225 4825 4225
+Wire Wire Line
+	4825 4325 5000 4325
+Wire Wire Line
+	5000 4425 4825 4425
+Wire Wire Line
+	4825 4525 5000 4525
+Text Label 5400 3825 0    50   ~ 0
+SEG_B-
+Text Label 5400 3925 0    50   ~ 0
+SEG_DP-
+Text Label 5400 4025 0    50   ~ 0
+SEG_A-
+Text Label 5400 4125 0    50   ~ 0
+SEG_C-
+Text Label 5400 4225 0    50   ~ 0
+SEG_F-
+Text Label 5400 4325 0    50   ~ 0
+SEG_D-
+Text Label 5400 4425 0    50   ~ 0
+SEG_E-
+Text Label 5400 4525 0    50   ~ 0
+SEG_G-
+Wire Wire Line
+	5300 4525 5725 4525
+Wire Wire Line
+	5300 4425 5725 4425
+Wire Wire Line
+	5300 4325 5725 4325
+Wire Wire Line
+	5300 4225 5725 4225
+Wire Wire Line
+	5300 4125 5725 4125
+Wire Wire Line
+	5300 4025 5725 4025
+Wire Wire Line
+	5300 3925 5725 3925
+Wire Wire Line
+	5300 3825 5725 3825
+Text Label 6350 2325 0    50   ~ 0
+SEG_A-
+Text Label 6350 2425 0    50   ~ 0
+SEG_B-
+Text Label 6350 2525 0    50   ~ 0
+SEG_C-
+Text Label 6350 2625 0    50   ~ 0
+SEG_D-
+Text Label 6350 2725 0    50   ~ 0
+SEG_E-
+Text Label 6350 2825 0    50   ~ 0
+SEG_F-
+Text Label 6350 2925 0    50   ~ 0
+SEG_G-
+Text Label 6350 3025 0    50   ~ 0
+SEG_DP-
+Wire Wire Line
+	6325 3025 6675 3025
+Wire Wire Line
+	6325 2925 6675 2925
+Wire Wire Line
+	6325 2825 6675 2825
+Wire Wire Line
+	6325 2725 6675 2725
+Wire Wire Line
+	6325 2625 6675 2625
+Wire Wire Line
+	6325 2525 6675 2525
+Wire Wire Line
+	6325 2425 6675 2425
+Wire Wire Line
+	6325 2325 6675 2325
+Text Label 7350 2925 0    50   ~ 0
+D0_EN
+Wire Wire Line
+	7275 2925 7600 2925
+$Comp
+L wifi_clock:RPiPicoW M1
+U 1 1 6362C23F
+P 1900 3275
+F 0 "M1" H 1900 4440 50  0000 C CNN
+F 1 "RPiPicoW" H 1900 4349 50  0000 C CNN
+F 2 "" H 1900 3275 50  0001 C CNN
+F 3 "" H 1900 3275 50  0001 C CNN
+	1    1900 3275
+	1    0    0    -1  
+$EndComp
+Text Label 2525 4275 0    50   ~ 0
+DHT22
+Wire Wire Line
+	2450 4275 2700 4275
+Text Label 2525 4175 0    50   ~ 0
+CS-
+Text Label 2525 3975 0    50   ~ 0
+SCK
+Text Label 2525 3875 0    50   ~ 0
+SDA
+Text Label 2525 2375 0    50   ~ 0
+VDD
+Wire Wire Line
+	2450 4175 2700 4175
+Wire Wire Line
+	2450 3975 2700 3975
+Wire Wire Line
+	2450 3875 2700 3875
+Wire Wire Line
+	2450 2375 2700 2375
+Text Notes 1450 1900 0    50   ~ 0
+PicoW powered by MicroUSB,\npowering rest of the system\nvia VBUS 5V output.
+Text Notes 1350 4950 0    50   ~ 0
+A single 20-pin socket header\nis enough to mount the PicoW,\nas all connections are on one\nside. Mirrored direction due to\nplacement on the backside.
+$Comp
+L power:GND #PWR01
+U 1 1 6364E60C
+P 3000 4075
+F 0 "#PWR01" H 3000 3825 50  0001 C CNN
+F 1 "GND" H 3005 3902 50  0000 C CNN
+F 2 "" H 3000 4075 50  0001 C CNN
+F 3 "" H 3000 4075 50  0001 C CNN
+	1    3000 4075
+	1    0    0    -1  
+$EndComp
+$Comp
+L Display_Character:KCSA02-107 U4
+U 1 1 6365991C
+P 8575 2625
+F 0 "U4" H 8575 3292 50  0000 C CNN
+F 1 "JSD-5613BUA" H 8575 3201 50  0000 C CNN
+F 2 "Display_7Segment:7SegmentLED_LTS6760_LTS6780" H 8575 2025 50  0001 C CNN
+F 3 "http://www.kingbright.com/attachments/file/psearch/000/00/00/KCSA02-107(Ver.10A).pdf" H 8075 3100 50  0001 L CNN
+	1    8575 2625
+	1    0    0    -1  
+$EndComp
+Text Label 7950 2325 0    50   ~ 0
+SEG_A-
+Text Label 7950 2425 0    50   ~ 0
+SEG_B-
+Text Label 7950 2525 0    50   ~ 0
+SEG_C-
+Text Label 7950 2625 0    50   ~ 0
+SEG_D-
+Text Label 7950 2725 0    50   ~ 0
+SEG_E-
+Text Label 7950 2825 0    50   ~ 0
+SEG_F-
+Text Label 7950 2925 0    50   ~ 0
+SEG_G-
+Text Label 7950 3025 0    50   ~ 0
+SEG_DP-
+Wire Wire Line
+	7925 3025 8275 3025
+Wire Wire Line
+	7925 2925 8275 2925
+Wire Wire Line
+	7925 2825 8275 2825
+Wire Wire Line
+	7925 2725 8275 2725
+Wire Wire Line
+	7925 2625 8275 2625
+Wire Wire Line
+	7925 2525 8275 2525
+Wire Wire Line
+	7925 2425 8275 2425
+Wire Wire Line
+	7925 2325 8275 2325
+Text Label 8950 2925 0    50   ~ 0
+D1_EN
+Wire Wire Line
+	8875 2925 9200 2925
+$Comp
+L Display_Character:KCSA02-107 U5
+U 1 1 63666410
+P 10175 2625
+F 0 "U5" H 10175 3292 50  0000 C CNN
+F 1 "JSD-5613BUA" H 10175 3201 50  0000 C CNN
+F 2 "Display_7Segment:7SegmentLED_LTS6760_LTS6780" H 10175 2025 50  0001 C CNN
+F 3 "http://www.kingbright.com/attachments/file/psearch/000/00/00/KCSA02-107(Ver.10A).pdf" H 9675 3100 50  0001 L CNN
+	1    10175 2625
+	1    0    0    -1  
+$EndComp
+Text Label 9550 2325 0    50   ~ 0
+SEG_A-
+Text Label 9550 2425 0    50   ~ 0
+SEG_B-
+Text Label 9550 2525 0    50   ~ 0
+SEG_C-
+Text Label 9550 2625 0    50   ~ 0
+SEG_D-
+Text Label 9550 2725 0    50   ~ 0
+SEG_E-
+Text Label 9550 2825 0    50   ~ 0
+SEG_F-
+Text Label 9550 2925 0    50   ~ 0
+SEG_G-
+Text Label 9550 3025 0    50   ~ 0
+SEG_DP-
+Wire Wire Line
+	9525 3025 9875 3025
+Wire Wire Line
+	9525 2925 9875 2925
+Wire Wire Line
+	9525 2825 9875 2825
+Wire Wire Line
+	9525 2725 9875 2725
+Wire Wire Line
+	9525 2625 9875 2625
+Wire Wire Line
+	9525 2525 9875 2525
+Wire Wire Line
+	9525 2425 9875 2425
+Wire Wire Line
+	9525 2325 9875 2325
+Text Label 10550 2925 0    50   ~ 0
+D2_EN
+Wire Wire Line
+	10475 2925 10800 2925
+$Comp
+L Display_Character:KCSA02-107 U6
+U 1 1 636738E8
+P 6975 4125
+F 0 "U6" H 6975 4792 50  0000 C CNN
+F 1 "JSD-5613BUA" H 6975 4701 50  0000 C CNN
+F 2 "Display_7Segment:7SegmentLED_LTS6760_LTS6780" H 6975 3525 50  0001 C CNN
+F 3 "http://www.kingbright.com/attachments/file/psearch/000/00/00/KCSA02-107(Ver.10A).pdf" H 6475 4600 50  0001 L CNN
+	1    6975 4125
+	1    0    0    -1  
+$EndComp
+Text Label 6350 3825 0    50   ~ 0
+SEG_A-
+Text Label 6350 3925 0    50   ~ 0
+SEG_B-
+Text Label 6350 4025 0    50   ~ 0
+SEG_C-
+Text Label 6350 4125 0    50   ~ 0
+SEG_D-
+Text Label 6350 4225 0    50   ~ 0
+SEG_E-
+Text Label 6350 4325 0    50   ~ 0
+SEG_F-
+Text Label 6350 4425 0    50   ~ 0
+SEG_G-
+Text Label 6350 4525 0    50   ~ 0
+SEG_DP-
+Wire Wire Line
+	6325 4525 6675 4525
+Wire Wire Line
+	6325 4425 6675 4425
+Wire Wire Line
+	6325 4325 6675 4325
+Wire Wire Line
+	6325 4225 6675 4225
+Wire Wire Line
+	6325 4125 6675 4125
+Wire Wire Line
+	6325 4025 6675 4025
+Wire Wire Line
+	6325 3925 6675 3925
+Wire Wire Line
+	6325 3825 6675 3825
+Text Label 7350 4425 0    50   ~ 0
+D3_EN
+Wire Wire Line
+	7275 4425 7600 4425
+$Comp
+L Display_Character:KCSA02-107 U7
+U 1 1 63673AEA
+P 8575 4125
+F 0 "U7" H 8575 4792 50  0000 C CNN
+F 1 "JSD-5613BUA" H 8575 4701 50  0000 C CNN
+F 2 "Display_7Segment:7SegmentLED_LTS6760_LTS6780" H 8575 3525 50  0001 C CNN
+F 3 "http://www.kingbright.com/attachments/file/psearch/000/00/00/KCSA02-107(Ver.10A).pdf" H 8075 4600 50  0001 L CNN
+	1    8575 4125
+	1    0    0    -1  
+$EndComp
+Text Label 7950 3825 0    50   ~ 0
+SEG_A-
+Text Label 7950 3925 0    50   ~ 0
+SEG_B-
+Text Label 7950 4025 0    50   ~ 0
+SEG_C-
+Text Label 7950 4125 0    50   ~ 0
+SEG_D-
+Text Label 7950 4225 0    50   ~ 0
+SEG_E-
+Text Label 7950 4325 0    50   ~ 0
+SEG_F-
+Text Label 7950 4425 0    50   ~ 0
+SEG_G-
+Text Label 7950 4525 0    50   ~ 0
+SEG_DP-
+Wire Wire Line
+	7925 4525 8275 4525
+Wire Wire Line
+	7925 4425 8275 4425
+Wire Wire Line
+	7925 4325 8275 4325
+Wire Wire Line
+	7925 4225 8275 4225
+Wire Wire Line
+	7925 4125 8275 4125
+Wire Wire Line
+	7925 4025 8275 4025
+Wire Wire Line
+	7925 3925 8275 3925
+Wire Wire Line
+	7925 3825 8275 3825
+Text Label 8950 4425 0    50   ~ 0
+D4_EN
+Wire Wire Line
+	8875 4425 9200 4425
+$Comp
+L Display_Character:KCSA02-107 U8
+U 1 1 63673B08
+P 10175 4125
+F 0 "U8" H 10175 4792 50  0000 C CNN
+F 1 "JSD-5613BUA" H 10175 4701 50  0000 C CNN
+F 2 "Display_7Segment:7SegmentLED_LTS6760_LTS6780" H 10175 3525 50  0001 C CNN
+F 3 "http://www.kingbright.com/attachments/file/psearch/000/00/00/KCSA02-107(Ver.10A).pdf" H 9675 4600 50  0001 L CNN
+	1    10175 4125
+	1    0    0    -1  
+$EndComp
+Text Label 9550 3825 0    50   ~ 0
+SEG_A-
+Text Label 9550 3925 0    50   ~ 0
+SEG_B-
+Text Label 9550 4025 0    50   ~ 0
+SEG_C-
+Text Label 9550 4125 0    50   ~ 0
+SEG_D-
+Text Label 9550 4225 0    50   ~ 0
+SEG_E-
+Text Label 9550 4325 0    50   ~ 0
+SEG_F-
+Text Label 9550 4425 0    50   ~ 0
+SEG_G-
+Text Label 9550 4525 0    50   ~ 0
+SEG_DP-
+Wire Wire Line
+	9525 4525 9875 4525
+Wire Wire Line
+	9525 4425 9875 4425
+Wire Wire Line
+	9525 4325 9875 4325
+Wire Wire Line
+	9525 4225 9875 4225
+Wire Wire Line
+	9525 4125 9875 4125
+Wire Wire Line
+	9525 4025 9875 4025
+Wire Wire Line
+	9525 3925 9875 3925
+Wire Wire Line
+	9525 3825 9875 3825
+Text Label 10550 4425 0    50   ~ 0
+D5_EN
+Wire Wire Line
+	10475 4425 10800 4425
+Text Notes 7125 6850 0    100  ~ 0
+WiFi-clock
+Text Notes 7125 6975 0    50   ~ 0
+https://tomscii.sig7.se/wifi-clock
+$Comp
+L Connector_Generic:Conn_01x20 J1
+U 1 1 636BB63C
+P 2300 6150
+F 0 "J1" H 2380 6142 50  0000 L CNN
+F 1 "PicoW right side" H 2380 6051 50  0000 L CNN
+F 2 "Connector_PinSocket_2.54mm:PinSocket_1x20_P2.54mm_Vertical" H 2300 6150 50  0001 C CNN
+F 3 "~" H 2300 6150 50  0001 C CNN
+	1    2300 6150
+	1    0    0    -1  
+$EndComp
+Text Label 1775 7150 0    50   ~ 0
+DHT22
+Text Label 1775 7050 0    50   ~ 0
+CS-
+Text Label 1775 6850 0    50   ~ 0
+SCK
+$Comp
+L power:GND #PWR0101
+U 1 1 636CBDD0
+P 1625 6950
+F 0 "#PWR0101" H 1625 6700 50  0001 C CNN
+F 1 "GND" H 1630 6777 50  0000 C CNN
+F 2 "" H 1625 6950 50  0001 C CNN
+F 3 "" H 1625 6950 50  0001 C CNN
+	1    1625 6950
+	1    0    0    -1  
+$EndComp
+Text Label 1775 6750 0    50   ~ 0
+SDA
+Text Label 1775 5250 0    50   ~ 0
+VDD
+Wire Wire Line
+	1775 7150 2100 7150
+Wire Wire Line
+	1775 7050 2100 7050
+Wire Wire Line
+	1625 6950 2100 6950
+Wire Wire Line
+	1775 6850 2100 6850
+Wire Wire Line
+	1775 6750 2100 6750
+Wire Wire Line
+	1775 5250 2100 5250
+$Comp
+L Connector_Generic:Conn_01x04 J2
+U 1 1 6370B558
+P 4425 6050
+F 0 "J2" H 4505 6042 50  0000 L CNN
+F 1 "DHT22 sensor" H 4505 5951 50  0000 L CNN
+F 2 "Connector_PinSocket_2.54mm:PinSocket_1x04_P2.54mm_Vertical" H 4425 6050 50  0001 C CNN
+F 3 "~" H 4425 6050 50  0001 C CNN
+	1    4425 6050
+	1    0    0    -1  
+$EndComp
+Text Label 3925 5950 0    50   ~ 0
+VDD
+Text Label 3925 6050 0    50   ~ 0
+DHT22
+$Comp
+L power:GND #PWR0102
+U 1 1 6373580E
+P 4075 6350
+F 0 "#PWR0102" H 4075 6100 50  0001 C CNN
+F 1 "GND" H 4080 6177 50  0000 C CNN
+F 2 "" H 4075 6350 50  0001 C CNN
+F 3 "" H 4075 6350 50  0001 C CNN
+	1    4075 6350
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4225 6150 4075 6150
+Wire Wire Line
+	4075 6150 4075 6250
+Wire Wire Line
+	4225 6250 4075 6250
+Connection ~ 4075 6250
+Wire Wire Line
+	4075 6250 4075 6350
+Wire Wire Line
+	3925 5950 4225 5950
+Wire Wire Line
+	3925 6050 4225 6050
+NoConn ~ 2100 5350
+NoConn ~ 2100 5550
+NoConn ~ 2100 5650
+NoConn ~ 2100 5750
+NoConn ~ 2100 5850
+NoConn ~ 2100 6050
+NoConn ~ 2100 6150
+NoConn ~ 2100 6250
+NoConn ~ 2100 6350
+NoConn ~ 2100 6550
+NoConn ~ 2100 6650
+Wire Wire Line
+	4825 2625 5175 2625
+Wire Wire Line
+	4825 2725 5175 2725
+NoConn ~ 4825 2025
+NoConn ~ 4825 2125
+NoConn ~ 10475 3025
+NoConn ~ 10475 4525
+NoConn ~ 8875 4525
+NoConn ~ 8875 3025
+NoConn ~ 7275 3025
+NoConn ~ 7275 4525
+Wire Wire Line
+	2450 2575 3000 2575
+Wire Wire Line
+	3000 2575 3000 3075
+Connection ~ 3000 4075
+Wire Wire Line
+	3000 4075 2450 4075
+Wire Wire Line
+	2450 3075 3000 3075
+Connection ~ 3000 3075
+Wire Wire Line
+	2450 3575 3000 3575
+Wire Wire Line
+	3000 3075 3000 3575
+Connection ~ 3000 3575
+Wire Wire Line
+	3000 3575 3000 4075
+Wire Wire Line
+	2100 5450 1625 5450
+Wire Wire Line
+	1625 5450 1625 5950
+Connection ~ 1625 6950
+Wire Wire Line
+	2100 5950 1625 5950
+Connection ~ 1625 5950
+Wire Wire Line
+	1625 5950 1625 6450
+Wire Wire Line
+	2100 6450 1625 6450
+Connection ~ 1625 6450
+Wire Wire Line
+	1625 6450 1625 6950
+$Comp
+L Device:C C1
+U 1 1 636E408B
+P 5650 6050
+F 0 "C1" H 5765 6096 50  0000 L CNN
+F 1 "100n" H 5765 6005 50  0000 L CNN
+F 2 "Capacitor_THT:C_Rect_L7.2mm_W2.5mm_P5.00mm_FKS2_FKP2_MKS2_MKP2" H 5688 5900 50  0001 C CNN
+F 3 "~" H 5650 6050 50  0001 C CNN
+	1    5650 6050
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C2
+U 1 1 636E486F
+P 6125 6050
+F 0 "C2" H 6240 6096 50  0000 L CNN
+F 1 "100n" H 6240 6005 50  0000 L CNN
+F 2 "Capacitor_THT:C_Rect_L7.2mm_W2.5mm_P5.00mm_FKS2_FKP2_MKS2_MKP2" H 6163 5900 50  0001 C CNN
+F 3 "~" H 6125 6050 50  0001 C CNN
+	1    6125 6050
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5650 6200 5900 6200
+$Comp
+L power:GND #PWR0103
+U 1 1 636EC6C8
+P 5900 6200
+F 0 "#PWR0103" H 5900 5950 50  0001 C CNN
+F 1 "GND" H 5905 6027 50  0000 C CNN
+F 2 "" H 5900 6200 50  0001 C CNN
+F 3 "" H 5900 6200 50  0001 C CNN
+	1    5900 6200
+	1    0    0    -1  
+$EndComp
+Connection ~ 5900 6200
+Wire Wire Line
+	5900 6200 6125 6200
+Wire Wire Line
+	5650 5900 5900 5900
+Wire Wire Line
+	5900 5900 5900 5825
+Connection ~ 5900 5900
+Wire Wire Line
+	5900 5900 6125 5900
+Text Label 5900 5825 0    50   ~ 0
+VDD
+Text Notes 5575 6600 0    50   ~ 0
+Bypass for U1, U2
+$EndSCHEMATC
