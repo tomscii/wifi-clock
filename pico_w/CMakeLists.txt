@@ -26,6 +26,7 @@ target_compile_definitions(wifi_clock PRIVATE
 
 target_link_libraries(wifi_clock
                 pico_cyw43_arch_lwip_threadsafe_background
-		pico_stdlib
+                pico_stdlib
+                hardware_rtc
                 hardware_spi
-		)
+                )

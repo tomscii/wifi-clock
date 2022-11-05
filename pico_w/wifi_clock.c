@@ -4,8 +4,10 @@
 
 #include "pico/stdlib.h"
 #include "pico/cyw43_arch.h"
+#include "pico/util/datetime.h"
 
 #include "hardware/gpio.h"
+#include "hardware/rtc.h"
 #include "hardware/spi.h"
 
 #include "lwip/dns.h"
@@ -32,7 +34,7 @@ typedef struct dht_t_
 #define NTP_PORT                  123
 // seconds between 1 Jan 1900 and 1 Jan 1970:
 #define NTP_DELTA          2208988800
-#define NTP_REQ_INTERVAL  (60 * 1000)
+#define NTP_REQ_INTERVAL (600 * 1000)
 #define NTP_REQ_TIMEOUT   (15 * 1000)
 
 // SPI
@@ -47,14 +49,50 @@ typedef struct dht_t_
 // Multiplexed 7-segment display
 #define N_DIGITS         6
 
+// Segment order defined by shift register output connections:
+#define SEG_B   (1 << 0)
+#define SEG_DP  (1 << 1)
+#define SEG_A   (1 << 2)
+#define SEG_C   (1 << 3)
+#define SEG_F   (1 << 4)
+#define SEG_D   (1 << 5)
+#define SEG_E   (1 << 6)
+#define SEG_G   (1 << 7)
+
 uint8_t digit = 0;
-uint8_t display [N_DIGITS] = { 0x55, 0xAA, 0x12, 0x34, 0x56, 0x78 };
+uint8_t display [N_DIGITS] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+
+uint8_t
+seg7_encode (char c)
+{
+   // Drive is active low, so list dark segments for each character:
+   switch (c)
+   {
+   case ' ': return SEG_A | SEG_B | SEG_C | SEG_D | SEG_E | SEG_F | SEG_G |
+                    SEG_DP;
+   case '0': return SEG_G | SEG_DP;
+   case '1': return SEG_A | SEG_D | SEG_E | SEG_F | SEG_G | SEG_DP;
+   case '2': return SEG_C | SEG_F | SEG_DP;
+   case '3': return SEG_E | SEG_F | SEG_DP;
+   case '4': return SEG_A | SEG_D | SEG_E | SEG_DP;
+   case '5': return SEG_B | SEG_E | SEG_DP;
+   case '6': return SEG_B | SEG_DP;
+   case '7': return SEG_D | SEG_E | SEG_F | SEG_G | SEG_DP;
+   case '8': return SEG_DP;
+   case '9': return SEG_E | SEG_DP;
+   default: return 0;
+   }
+}
 
 repeating_timer_t rt_display_update;
 bool
 update_display (repeating_timer_t *rt)
 {
-   uint8_t v = 1 << digit;
+   // Digit select is active high (common anode),
+   // the lowest two digits are not connected:
+   uint8_t v = 4 << digit;
+   // MSB gets shifted out first (driving SEG_G);
+   // LSB is the lowermost unconnected digit-driving bit.
    uint16_t w = (display [digit] << 8) | v;
 
    // This takes 1us, as we run SPI at 16 MHz:
@@ -66,16 +104,49 @@ update_display (repeating_timer_t *rt)
    return true;
 }
 
+time_t rtc_setting = 0;
+
+int64_t
+rtc_set_cb (alarm_id_t id, void* data)
+{
+   // TODO add one more hour within DST interval
+   time_t localtime = rtc_setting + 3600;
+   struct tm* tm = gmtime (&localtime);
+
+   datetime_t t =
+      {
+         .year = tm->tm_year + 1900,
+         .month = tm->tm_mon + 1,
+         .day = tm->tm_mday,
+         .dotw = tm->tm_wday,
+         .hour = tm->tm_hour,
+         .min = tm->tm_min,
+         .sec = tm->tm_sec
+      };
+   rtc_set_datetime (&t);
+
+   printf ("RTC set to: %04d-%02d-%02d %02d:%02d:%02d\n",
+           tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday,
+           tm->tm_hour, tm->tm_min, tm->tm_sec);
+
+   return 0;
+}
+
 // Called with results of operation
 static void
-ntp_result (ntp_t* state, int status, time_t *result)
+ntp_result (ntp_t* state, int status, time_t* result, double* frac)
 {
-   if (status == 0 && result)
+   if (status == 0 && result && frac)
    {
       struct tm *utc = gmtime(result);
-      printf ("Got NTP response: %04d-%02d-%02d %02d:%02d:%02d\n",
+      printf ("Got NTP response: %04d-%02d-%02d %02d:%02d:%02d f=%f\n",
               utc->tm_year + 1900, utc->tm_mon + 1, utc->tm_mday,
-              utc->tm_hour, utc->tm_min, utc->tm_sec);
+              utc->tm_hour, utc->tm_min, utc->tm_sec, *frac);
+
+      // schedule setting of the RTC at the next whole second:
+      uint32_t rtc_set_delay_ms = 1000 * (1.0 - *frac);
+      rtc_setting = *result;
+      add_alarm_in_ms (rtc_set_delay_ms, rtc_set_cb, NULL, false);
    }
 
    if (state->ntp_resend_alarm > 0)
@@ -110,7 +181,7 @@ ntp_failed_handler (alarm_id_t id, void *user_data)
 {
    ntp_t* state = (ntp_t*) user_data;
    printf ("NTP request timed out\n");
-   ntp_result (state, -1, NULL);
+   ntp_result (state, -1, NULL, NULL);
    return 0;
 }
 
@@ -128,7 +199,7 @@ ntp_dns_found (const char *hostname, const ip_addr_t *ipaddr, void *arg)
    else
    {
       printf ("NTP DNS request failed\n");
-      ntp_result (state, -1, NULL);
+      ntp_result (state, -1, NULL, NULL);
    }
 }
 
@@ -145,19 +216,23 @@ ntp_recv (void *arg, struct udp_pcb *pcb, struct pbuf *p,
    if (ip_addr_cmp (addr, &state->ntp_server_address) && port == NTP_PORT &&
        p->tot_len == NTP_MSG_LEN && mode == 0x4 && stratum != 0)
    {
-      uint8_t seconds_buf [4] = {0};
-      pbuf_copy_partial (p, seconds_buf, sizeof (seconds_buf), 40);
+      uint8_t buf [8] = {0};
+      pbuf_copy_partial (p, buf, sizeof (buf), 0x28);
       uint32_t seconds_since_1900 =
-         seconds_buf [0] << 24 | seconds_buf [1] << 16 |
-         seconds_buf [2] << 8 | seconds_buf [3];
+         buf [0] << 24 | buf [1] << 16 |
+         buf [2] << 8 | buf [3];
       uint32_t seconds_since_1970 = seconds_since_1900 - NTP_DELTA;
       time_t epoch = seconds_since_1970;
-      ntp_result (state, 0, &epoch);
+      uint32_t frac_seconds =
+         buf [4] << 24 | buf [5] << 16 |
+         buf [6] << 8 | buf [7];
+      double frac = (double)frac_seconds / (1ULL << 32);
+      ntp_result (state, 0, &epoch, &frac);
    }
    else
    {
       printf ("Invalid NTP response\n");
-      ntp_result (state, -1, NULL);
+      ntp_result (state, -1, NULL, NULL);
    }
    pbuf_free (p);
 }
@@ -288,6 +363,14 @@ main ()
    gpio_init (DHT_GPIO);
    gpio_pull_up (DHT_GPIO);
 
+   rtc_init ();
+   datetime_t t =
+   {
+      .year = 2020, .month = 1, .day = 1, .dotw = 3,
+      .hour = 0, .min = 0, .sec = 0
+   };
+   rtc_set_datetime (&t);
+
    add_repeating_timer_ms (-2, update_display, NULL, &rt_display_update);
 
    if (cyw43_arch_init_with_country (CYW43_COUNTRY_SWEDEN)) {
@@ -317,7 +400,7 @@ main ()
 
    while (1)
    {
-      if (absolute_time_diff_us (get_absolute_time(), ntp_state->next_req) < 0 &&
+      if (absolute_time_diff_us (get_absolute_time (), ntp_state->next_req) < 0 &&
           !ntp_state->dns_request_sent)
       {
          // Set alarm in case udp requests are lost
@@ -344,7 +427,7 @@ main ()
          else if (err != ERR_INPROGRESS)
          { // ERR_INPROGRESS means expect a callback
             printf ("DNS request failed\n");
-            ntp_result (ntp_state, -1, NULL);
+            ntp_result (ntp_state, -1, NULL, NULL);
          }
       }
 #if PICO_CYW43_ARCH_POLL
@@ -364,19 +447,34 @@ main ()
          dht_reading reading;
          if (read_from_dht (&reading) == 0)
          {
-            printf("Humidity = %.1f%%, Temperature = %.1f*C\n",
-                   reading.humidity, reading.temp_celsius);
+            printf ("Humidity = %.1f%%, Temperature = %.1f*C\n",
+                    reading.humidity, reading.temp_celsius);
 
             dht_state->next_read = make_timeout_time_ms (DHT_POLL_INTERVAL);
          }
          else
          {
-            printf("DHT: Bad data\n");
+            printf ("DHT: Bad data\n");
             dht_state->next_read = make_timeout_time_ms (DHT_RETRY_INTERVAL);
          }
       }
 
-      sleep_ms (1);
+      rtc_get_datetime (&t);
+
+      if (t.hour < 10)
+         display [0] = seg7_encode (' ');
+      else
+         display [0] = seg7_encode ((t.hour / 10) + '0');
+      display [1] = seg7_encode ((t.hour % 10) + '0');
+      display [2] = seg7_encode ((t.min / 10) + '0');
+      display [3] = seg7_encode ((t.min % 10) + '0');
+      display [4] = seg7_encode ((t.sec / 10) + '0');
+      display [5] = seg7_encode ((t.sec % 10) + '0');
+
+      display [1] &= ~SEG_DP;
+      display [3] &= ~SEG_DP;
+
+      sleep_ms (20);
    }
 
    free (dht_state);
