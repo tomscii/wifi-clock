@@ -8,7 +8,12 @@ set (CMAKE_CXX_STANDARD 17)
 pico_sdk_init ()
 
 add_executable (wifi_clock
-                wifi_clock.c
+                main.c
+                dht.c
+                display.c
+                ntp.c
+                snmp.c
+                wifi.c
                )
 
 pico_enable_stdio_usb (wifi_clock 1)
