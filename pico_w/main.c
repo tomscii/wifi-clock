@@ -18,7 +18,7 @@ int
 main ()
 {
    stdio_init_all ();
-   printf ("\nWiFi-clock\n");
+   printf ("\n\nWiFi-clock\n");
 
    display_init ();
 
