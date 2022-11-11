@@ -5,6 +5,10 @@
 
 #define SNMP_RO_COMMUNITY "public"
 
+// Variables bound to SNMP; set values externally
+extern int32_t snmp_temperature;
+extern int32_t snmp_percent_rh;
+
 typedef struct snmp_t_
 {
    struct udp_pcb *pcb;

@@ -1,4 +1,5 @@
 #include "dht.h"
+#include "snmp.h"
 
 #include "hardware/gpio.h"
 
@@ -99,6 +100,9 @@ dht_on_tick (dht_t* dht_state)
       dht_reading reading;
       if (read_from_dht (&reading) == 0)
       {
+         snmp_temperature = 10 * reading.temp_celsius;
+         snmp_percent_rh = 10 * reading.humidity;
+
          printf ("%.1f*C %.1f%%RH  ",
                  reading.temp_celsius, reading.humidity);
 
