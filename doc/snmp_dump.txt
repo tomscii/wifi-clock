@@ -113,3 +113,13 @@ iso.3.6.1.2.1.999999 = No Such Object available on this agent at this OID
 N.B.: the last 80 00 in the response encode "no such object" and constitute
 the value part of the binding sequence. Note the error-status and
 error-index are zero. (Observed from Net-SNMP, might not be normative.)
+
+
+$ snmpget -d -r0 -v2c -cpublic 192.168.1.172 .1.3.6.1.2.1.99.1
+
+Sending 41 bytes to UDP: [192.168.1.172]:161->[0.0.0.0]:60071
+0000: 30 27 02 01  01 04 06 70  75 62 6C 69  63 A0 1A 02    0'.....public...
+0016: 03 0C 7D 20  02 01 00 02  01 00 30 0D  30 0B 06 07    ..} ......0.0...
+0032: 2B 06 01 02  01 63 01 05  00                          +....c...
+
+N.B.: REQUEST-ID is only 3 bytes above!

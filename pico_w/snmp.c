@@ -114,28 +114,31 @@ snmp_recv_cb (void *arg, struct udp_pcb *pcb, struct pbuf *p,
 
    uint8_t * req = data + 7 + community_len;
    uint8_t req_len = req [1];
-   if (7 + community_len + 2 + req_len != p->len)
+   if (9 + community_len + req_len != p->len)
       return snmp_recv_done (p);
    if (req_len < 14)
       return snmp_recv_done (p);
 
-   if (req [2] != 0x02 || req [3] != 0x04)
+   if (req [2] != 0x02)
       return snmp_recv_done (p);
-   uint32_t req_id = req [4] << 24 | req [5] << 16 | req [6] << 8 | req [7];
-   if (memcmp (req + 8, "\x02\x01\x00\x02\x01\x00\x30", 7))
+   uint8_t req_id_len = req [3];
+   if (req_id_len > 4)
+      return snmp_recv_done (p);
+   uint8_t * req2 = req + 4 + req_id_len;
+   if (memcmp (req2, "\x02\x01\x00\x02\x01\x00\x30", 7))
       return snmp_recv_done (p);
 
-   uint8_t bindings_len = req [15];
-   if (7 + community_len + 16 + bindings_len != p->len)
+   uint8_t bindings_len = req2 [7];
+   if (19 + community_len + req_id_len + bindings_len != p->len)
       return snmp_recv_done (p);
 
    switch (req [0])
    {
    case 0xa0:
-      printf ("get id=%08x\n", req_id);
+      printf ("get\n");
       break;
    case 0xa1:
-      printf ("get-next id=%08x\n", req_id);
+      printf ("get-next\n");
       break;
    default:
       return snmp_recv_done (p);
@@ -155,19 +158,14 @@ snmp_recv_cb (void *arg, struct udp_pcb *pcb, struct pbuf *p,
 #define UPDATE_LENGTH(VAR)                      \
    response [VAR] = rp - VAR - 1;
 
-   uint8_t response [129] = { 0x30, 0x00, 0x02, 0x01, 0x01, 0x04 };
-   response [6] = community_len;
-   uint8_t rp = 7;
-   APPEND_STR (SNMP_RO_COMMUNITY, community_len);
-   APPEND_BYTE (0xa2);
-   DECL_LENGTH (pdu_len_idx);
-   APPEND_BYTE (0x02);
-   APPEND_BYTE (0x04);
-   APPEND_STR (req + 4, 4);
-   APPEND_STR ("\x02\x01\x00\x02\x01\x00\x30", 7);
+   uint8_t response [129];
+   uint8_t rp = 18 + community_len + req_id_len;
+   memcpy (response, data, rp);
+   response [7 + community_len] = 0xa2;
+   uint8_t pdu_len_idx = 8 + community_len;
    DECL_LENGTH (bindings_len_idx);
 
-   uint8_t * bind = req + 16;
+   uint8_t * bind = req2 + 8;
    do
    {
       if (bindings_len < 2)
