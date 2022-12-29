@@ -66,8 +66,10 @@ bool
 update_display (repeating_timer_t *rt)
 {
    // Digit select is active high (common anode),
-   // the lowest two digits are not connected:
-   uint8_t v = 4 << digit;
+   // the lowest two digits are not connected.
+   // N.B.: digit order is reversed (d.[0] is leftmost,
+   // i.e., highest value) for the sake of PCB wiring!
+   uint8_t v = 128 >> digit;
    // MSB gets shifted out first (driving SEG_G);
    // LSB is the lowermost unconnected digit-driving bit.
    uint16_t w = (display [digit] << 8) | v;
