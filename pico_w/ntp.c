@@ -1,6 +1,8 @@
 #include "ntp.h"
 #include "wifi.h"
 
+#include "dst_table.h"
+
 #include "hardware/rtc.h"
 
 #include "lwip/dns.h"
@@ -15,8 +17,35 @@ static time_t rtc_setting = 0;
 static int64_t
 rtc_set_cb (alarm_id_t id, void* data)
 {
-   // TODO add one more hour within DST interval
-   time_t localtime = rtc_setting + 3600;
+   ntp_t* state = (ntp_t*) data;
+   struct tm* utc = gmtime (&rtc_setting);
+   int year = utc->tm_year + 1900;
+   int tz_offset = 3600;
+   char* tz = "CET";
+   int next_dst_change_in = 99999999;
+   if (year >= dst_table_start && year < dst_table_start + dst_table_years)
+   {
+      int idx = 2 * (year - dst_table_start);
+      int dst_start = dst_table [idx];
+      int dst_end = dst_table [idx + 1];
+      if (rtc_setting < dst_start)
+      {
+         next_dst_change_in = dst_start - rtc_setting;
+      }
+      else if (rtc_setting < dst_end)
+      {
+         next_dst_change_in = dst_end - rtc_setting;
+         tz_offset += 3600;
+         tz = "CEST";
+      }
+      else
+      {
+         // Next year's DST start is surely more than a few
+         // NTP_REQ_INTERVAL_MS away...
+      }
+   }
+
+   time_t localtime = rtc_setting + tz_offset;
    struct tm* tm = gmtime (&localtime);
 
    datetime_t t =
@@ -31,9 +60,16 @@ rtc_set_cb (alarm_id_t id, void* data)
       };
    rtc_set_datetime (&t);
 
-   printf ("RTC set to: %04d-%02d-%02d %02d:%02d:%02d\n",
+   printf ("RTC set to: %04d-%02d-%02d %02d:%02d:%02d %s\n",
            tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday,
-           tm->tm_hour, tm->tm_min, tm->tm_sec);
+           tm->tm_hour, tm->tm_min, tm->tm_sec, tz);
+
+   if (next_dst_change_in < NTP_REQ_INTERVAL_MS / 1000)
+   {
+      state->next_req = make_timeout_time_ms (1000 * next_dst_change_in);
+      printf ("Next DST change in %d seconds, re-scheduling NTP request\n",
+              next_dst_change_in);
+   }
 
    return 0;
 }
@@ -45,15 +81,17 @@ ntp_result (ntp_t* state, int status, time_t* result, double* frac)
    if (status == 0 && result && frac)
    {
       struct tm *utc = gmtime (result);
-      printf ("Got NTP response: %04d-%02d-%02d %02d:%02d:%2.6f\n",
+      printf ("Got NTP response: %04d-%02d-%02d %02d:%02d:%2.6f UTC\n",
               utc->tm_year + 1900, utc->tm_mon + 1, utc->tm_mday,
               utc->tm_hour, utc->tm_min, utc->tm_sec + *frac);
 
       // schedule setting of the RTC at the next whole second:
       uint32_t rtc_set_delay_ms = 1000 * (1.0 - *frac);
       rtc_setting = *result;
-      add_alarm_in_ms (rtc_set_delay_ms, rtc_set_cb, NULL, false);
+      add_alarm_in_ms (rtc_set_delay_ms, rtc_set_cb, state, true);
       state->fail_count = 0;
+      // N.B.: will possibly revise the deadline in rtc_set_cb
+      // in case of an upcoming DST transition:
       state->next_req = make_timeout_time_ms (NTP_REQ_INTERVAL_MS);
    }
    else
