@@ -40,13 +40,13 @@ read_dht_bit ()
       sleep_us (1);
    }
 
-   return count > 26 ? 1 : 0;
+   return count > 30 ? 1 : 0;
 }
 
 static int
 read_from_dht (dht_reading *result)
 {
-   uint8_t data [5] = {0, 0, 0, 0, 0};
+   uint8_t* data = result->data;
 
    gpio_set_dir (DHT_GPIO, GPIO_OUT);
    gpio_put (DHT_GPIO, 0);
@@ -75,16 +75,39 @@ read_from_dht (dht_reading *result)
 
    if (sum > 0 && data [4] == (sum & 0xff))
    {
-      result->humidity = (float) ((data [0] << 8) + data [1]) / 10;
-      if (result->humidity > 100)
-         result->humidity = data[0];
+      uint16_t rh = (data [0] << 8) | data [1];
+      result->humidity = (float) rh / 10;
 
-      result->temp_celsius = (float) (((data [2] & 0x7F) << 8) + data [3]) / 10;
-      if (result->temp_celsius > 125)
-         result->temp_celsius = data[2];
-
-      if (data [2] & 0x80)
-         result->temp_celsius = -result->temp_celsius;
+ /* ACHTUNG!
+  *
+  * I have observed TWO kinds of nominally DHT22-compatible sensors in the wild:
+  * ONE that has a sign bit in front of the (unsigned / positive) temperature
+  * value, and ANOTHER that emits a proper two's complement temperature value.
+  *
+  * For positive temperatures, there is no difference.
+  *
+  * As illustration, the temperature -7.2*C would be encoded like this:
+  *
+  *    RAW MEASUREMENT DATA    TEMPERATURE
+  *    data [2]   data [3]      IN CELSIUS
+  *    -----------------------------------
+  *     0x80       0x48            -7.2    (sign bit + positive: 0x48 -> 72)
+  *     0xff       0xb8            -7.2    (2's complement encoding: -72)
+  *
+  * Choose your poison.
+  */
+ #if 0
+      /* Positive 15-bit value preceded by sign bit */
+      uint16_t traw = (data [2] << 8) | data [3];
+      int16_t temp = traw & 0x7fff;
+      if (traw & 0x8000)
+         temp *= -1;
+ #else
+      /* Two's complement value on 16 bits */
+      uint16_t traw = (data [2] << 8) | data [3];
+      int16_t temp = traw;
+ #endif
+      result->temp_celsius = (float) temp / 10;
 
       return 0;
    }
@@ -110,7 +133,9 @@ dht_on_tick (dht_t* dht_state)
       }
       else
       {
-         printf ("DHT: Bad data\n");
+         uint8_t* data = reading.data;
+         printf ("DHT: Bad data: %02x %02x %02x %02x %02x\n",
+                 data [0], data [1], data [2], data [3], data [4]);
          dht_state->next_read = make_timeout_time_ms (DHT_RETRY_INTERVAL_MS);
       }
    }
