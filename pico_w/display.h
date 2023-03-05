@@ -17,5 +17,6 @@
 #define SEG_G   (1 << 7)
 
 void display_init ();
+void display_set_brightness (uint8_t);
 void display_on_tick ();
 bool update_display (repeating_timer_t *);

@@ -7,6 +7,8 @@ static uint8_t digit = 0;
 static uint8_t display [N_DIGITS] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 static repeating_timer_t rt_display_update;
 
+static uint8_t brightness_percent = 100;
+
 static uint8_t
 seg7_encode (char c)
 {
@@ -42,6 +44,12 @@ display_init ()
 }
 
 void
+display_set_brightness (uint8_t _brightness_percent)
+{
+   brightness_percent = _brightness_percent;
+}
+
+void
 display_on_tick ()
 {
    datetime_t t;
@@ -60,6 +68,21 @@ display_on_tick ()
 
    display [1] &= ~SEG_DP;
    display [3] &= ~SEG_DP;
+
+   uint8_t brightness = 100;
+   if (t.hour < 7 || t.hour > 20)
+      brightness = 2;
+   else if (t.hour > 19)
+      brightness = 10;
+   display_set_brightness (brightness);
+}
+
+int64_t
+display_off_cb (alarm_id_t id, void *user_data)
+{
+   uint16_t w = 0;
+   spi_write16_blocking (SPI_ID, &w, 1);
+   return 0;
 }
 
 bool
@@ -79,6 +102,16 @@ update_display (repeating_timer_t *rt)
 
    if (++digit == N_DIGITS)
       digit = 0;
+
+   // If the brightness setting is less than 100,
+   // add an alarm with a callback to blank the display
+   // at a time proportional to the brightness.
+   if (brightness_percent < 100)
+   {
+      // (brightness == 100 --> full cycle time == 2000 us)
+      uint64_t display_on_us = 20 * brightness_percent;
+      add_alarm_in_us (display_on_us, display_off_cb, NULL, true);
+   }
 
    return true;
 }
