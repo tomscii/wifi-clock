@@ -1,4 +1,0 @@
-NTP-sync'd clock with Raspberry Pico W
-including SNMP agent serving temperature/humidity sensor values
-
-See: https://tomscii.sig7.se/wifi-clock

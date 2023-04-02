@@ -2,7 +2,7 @@
 
 static int dst_table_start = 2020;
 static int dst_table_years = 80;
-static int dst_table [] =
+static time_t dst_table [] =
 {
    1585443600, 1603587600,  // 2020-03-29 -- 2020-10-25
    1616893200, 1635642000,  // 2021-03-28 -- 2021-10-31

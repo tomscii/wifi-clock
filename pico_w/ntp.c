@@ -26,8 +26,8 @@ rtc_set_cb (alarm_id_t id, void* data)
    if (year >= dst_table_start && year < dst_table_start + dst_table_years)
    {
       int idx = 2 * (year - dst_table_start);
-      int dst_start = dst_table [idx];
-      int dst_end = dst_table [idx + 1];
+      time_t dst_start = dst_table [idx];
+      time_t dst_end = dst_table [idx + 1];
       if (rtc_setting < dst_start)
       {
          next_dst_change_in = dst_start - rtc_setting;
